@@ -1,0 +1,21 @@
+THE KRAIT OBJECT SERIALIZATION LANGUAGE (KOSL) TL;DR
+
+  - KraitDev owns the official Krait Object Serialization Language (KOSL)
+    project.
+
+  - Anyone can use, modify, and share the code for free under the dual MIT and
+    Apache 2.0 open-source framework.
+
+  - If you "fork" (copy) the parser or transpilers to make your own version, you
+    CANNOT claim you invented it, and you MUST change the name so it does not
+    use "Krait Object Serialization Language", "KOSL", or the official project
+    logo.
+
+  - You CAN use the "KOSL" or "Krait Object Serialization Language" name and
+    official logo to build, brand, and promote tools, utilities, or
+    configurations created for the KOSL ecosystem, as long as it is clear that
+    your tool is an independent community creation.
+
+  - The word "krait" can be used completely freely by anyone for anything else
+    outside of programming or serialization languages (like for games, snakes,
+    clothes, or stories).

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Outer Hexagon bounding representing structure/objects -->
+  <polygon points="50,5 95,28 95,72 50,95 5,72 5,28" stroke="#007ACC" stroke-width="6" fill="none" stroke-linejoin="round"/>
+  
+  <!-- Minimalist Krait Snake S-Curve -->
+  <path d="M 65 30 
+           C 40 20, 20 40, 50 50 
+           C 80 60, 60 80, 35 70" 
+        stroke="#007ACC" stroke-width="8" stroke-linecap="round" fill="none"/>
+        
+  <!-- Snake Eye/Head marker -->
+  <circle cx="65" cy="30" r="4" fill="#007ACC" />
+</svg>

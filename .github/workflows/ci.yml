@@ -1,0 +1,65 @@
+# .github/workflows/ci.yml
+name: KOSL CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-D warnings"
+
+jobs:
+  test:
+    name: Build & Test (Rust)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Cargo Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Check Formatting
+        run: cargo fmt --all -- --check
+
+      - name: Lint with Clippy
+        run: cargo clippy --all-targets --all-features
+
+      - name: Run Tests
+        run: cargo test --all --all-features
+
+  vscode-validate:
+    name: Validate VSCode Extension
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-node-version: '20'
+
+      - name: Install dependencies and compile
+        working-directory: ./vscode-extension
+        run: |
+          npm install --no-audit --no-fund
+          # Optional: Run syntax validator here if adding custom linting

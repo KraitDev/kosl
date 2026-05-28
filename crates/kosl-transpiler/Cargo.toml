@@ -1,0 +1,9 @@
+[package]
+name = "kosl-transpiler"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+kosl-ast = { path = "../kosl-ast" }
+toml = "0.8"
+anyhow = "1.0"

@@ -1,7 +1,15 @@
-[package]
-name = "kosl_engine"
-version = "0.1.0"
-edition = "2021"
-description = "Universal configuration parser engine for Krait Object Serialization Language (KOSL)."
+[workspace]
+members = [
+    "crates/kosl-ast",
+    "crates/kosl-parser",
+    "crates/kosl-formatter",
+    "crates/kosl-transpiler",
+    "crates/kosl-cli"
+]
+resolver = "2"
 
-[dependencies]
+[workspace.package]
+version = "0.1.0"
+authors = ["KOSL Contributors"]
+edition = "2021"
+license = "MIT and Apache-2.0"

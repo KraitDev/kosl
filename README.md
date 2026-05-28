@@ -1,87 +1,52 @@
-# KOSL (Krait Object Serialization Language)
+# Krait Object Serialization Language (KOSL) 🐍
 
-KOSL is a minimal, human-readable, and blazing-fast data serialization format built entirely in Rust. Designed originally as the native configuration pipeline for the **Krait** programming language ecosystem, KOSL offers a flat, zero-nonsense alternative to JSON and TOML while retaining 100% compatibility with the Rust `cargo` build system.
+KOSL is a modern, human-first serialization and configuration language. It combines the simplicity of `.env` files, the structure of JSON, and the usability of TOML, while completely avoiding the magical implicit conversions and whitespace sensitivity of YAML.
 
 ## Features
+- **Strict & Deterministic**: No indentation semantics, no implicit date parsing.
+- **Minimal Syntax**: Parentheses `()` for objects, Brackets `[]` for explicit arrays.
+- **Implicit Arrays**: Top-level commas create arrays naturally (`supported = win, mac, linux`).
+- **Cargo Native**: Transpile `Cargo.kosl` directly to `Cargo.toml` with `kosl transpile`.
+- **High Performance**: Zero-copy capable Rust parser.
 
-- **Minimalist Syntax:** Clean `key=value` layout without the noise of trailing commas, outer curly braces, or forced quotes.
-- **Native Grouped Objects:** Simple parentheses syntax `group=(key=value)` for handling nested structures without indentation traps.
-- **Dynamic Type Parsing:** Automatic runtime handling of Strings, Integers, Floats, Booleans, and comma-separated Lists.
-- **Built-in Cargo Bridge:** Read a `krait.kosl` file and automatically generate a fully valid `Cargo.toml` dynamically.
-- **Blazing Fast:** Written in 100% safe, idiomatic Rust.
+## Example `Cargo.kosl`
+```kosl
+package=(
+  name=my_project,
+  version=0.1.0,
+  edition=2021
+)
 
-## Syntax Example
+dependencies=(
+  rand=0.8.5,
+  serde=(
+    version=1.0,
+    features=[derive]
+  )
+)
 
-```coffee
-# krait.kosl
-name=my_krait_project
-version=0.1.0
-edition=2021
-
-dependencies=(rand=0.8.5, serde=1.0)
-supportedOS=windows, macOS, ubuntu
-
+## CLI Usage
+```bash
+cargo install kosl-cli
+kosl parse config.kosl
+kosl format config.kosl
+kosl transpile Cargo.kosl # Outputs Cargo.toml
 ```
 
-When run through the translation bridge, it automatically compiles into:
-
-```toml
-[package]
-name = "my_krait_project"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-rand = "0.8.5"
-serde = "1.0"
-
-[package.metadata.krait]
-supportedOS = ["windows", "macOS", "ubuntu"]
-
-```
-
-## Usage
-
-Add KOSL to your `Cargo.toml`:
-
-```toml
-[dependencies]
-kosl = { git = "[https://github.com/yourusername/kosl](https://github.com/yourusername/kosl)" }
-
-```
-
-### Parsing KOSL in Rust
-
-```rust
-use kosl::parser::parse_kosl;
-
-fn main() {
-    let kosl_text = "appName=Krait Dashboard\nversion=1.2";
-    let parsed_data = parse_kosl(kosl_text);
-    
-    println!("{:#?}", parsed_data);
-}
-
-```
-
-### Auto-Generating Cargo.toml
-
-```rust
-use kosl::automation::generate_cargo_toml;
-
-fn main() {
-    // Looks for 'krait.kosl' in the current directory and outputs 'Cargo.toml'
-    if let Err(e) = generate_cargo_toml() {
-        eprintln!("Automation failed: {}", e);
-    }
-}
-
-```
+## IDE Support
+KOSL includes a first-class VSCode extension providing semantic highlighting, auto-formatting, and the official file icons for `.kosl` files.
 
 ## Contributing
 
-We welcome contributions to KOSL. See CONTRIBUTING.md for details.
+We welcome contributions to KOSL. See [CONTRIBUTING.md](CONTRIBUTING.md) to learn more.
 
-## License
+## License & Project Policies
 
-KOSL is dual licensed under the terms of both the MIT License and the Apache License 2.0. See LICENSE-MIT and LICENSE-APACHE for details.
+**Krait Object Serialization Language (KOSL)** is an open-source project managed by **KraitDev**. The core files are dual-licensed under the terms of both the **MIT License** and the **Apache License 2.0**.
+
+To protect the integrity of the ecosystem and ensure fair attribution, all users, forks, and contributors are bound by our official project policies:
+
+* **Copyright & Ownership:** KraitDev retains exclusive ownership of the core KOSL codebase. Contributors maintain authorship of their specific code but grant KraitDev a permanent license to distribute it. Review the full fork and attribution boundaries in [COPYRIGHT](COPYRIGHT).
+* **Trademark & Identity:** The phrase *"Krait Object Serialization Language"*, the word *"KOSL"* and the official logos are protected brand assets. You are fully permitted to use them to brand community tools, libraries, and extensions built for the ecosystem, provided it is clear they are independent creations. Deceptive core forks or commercial passing off are strictly prohibited. Review the full domain boundaries in [TRADEMARK](TRADEMARK).
+
+See [LICENSE-MIT](LICENSE-MIT) and [LICENSE-APACHE](LICENSE-APACHE) for the underlying open-source license texts.

@@ -1,0 +1,33 @@
+{
+  "name": "KOSL",
+  "scopeName": "source.kosl",
+  "patterns": [
+    {
+      "match": "(#|//).*$",
+      "name": "comment.line.kosl"
+    },
+    {
+      "match": "^\\s*([a-zA-Z0-9_.-]+)\\s*(?=(=))",
+      "captures": {
+        "1": { "name": "variable.other.property.kosl" }
+      }
+    },
+    {
+      "match": "(?<=[=(,]\\s*)(true|false|null)(?=\\s*[,)\\]\\n])",
+      "name": "constant.language.kosl"
+    },
+    {
+      "match": "(?<=[=(,]\\s*)-?[0-9]+(\\.[0-9]+)?(?=\\s*[,)\\]\\n])",
+      "name": "constant.numeric.kosl"
+    },
+    {
+      "begin": "\"",
+      "end": "\"",
+      "name": "string.quoted.double.kosl"
+    },
+    {
+      "match": "=",
+      "name": "keyword.operator.assignment.kosl"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
-use kosl_ast::Value;
 use anyhow::Result;
+use kosl_ast::Value;
 
 /// Formats a parsed KOSL Value into a standardized, deterministic string.
 pub fn format(value: &Value) -> Result<String> {
@@ -21,9 +21,16 @@ fn format_value(value: &Value, indent_level: usize, out: &mut String) -> Result<
         Value::Float(f) => out.push_str(&f.to_string()),
         Value::String(s) => {
             // Check if string contains spaces or structural characters
-            let needs_quotes = s.is_empty() || s.chars().any(|c| {
-                c.is_whitespace() || c == ',' || c == '=' || c == '(' || c == ')' || c == '[' || c == ']'
-            });
+            let needs_quotes = s.is_empty()
+                || s.chars().any(|c| {
+                    c.is_whitespace()
+                        || c == ','
+                        || c == '='
+                        || c == '('
+                        || c == ')'
+                        || c == '['
+                        || c == ']'
+                });
             if needs_quotes {
                 out.push_str(&format!("\"{}\"", s));
             } else {

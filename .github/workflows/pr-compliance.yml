@@ -1,0 +1,44 @@
+name: Enforce PR Template
+
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+
+jobs:
+  validate-template:
+    name: Check PR Content
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR Body
+        env:
+          # Pull the PR body directly from the GitHub context safely via env var
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          echo "Validating PR template contents..."
+          
+          # 1. Reject completely empty PR bodies
+          if [[ -z "${PR_BODY//[[:space:]]/}" ]]; then
+            echo "::error title=Empty PR Body::The PR body is empty. Please fill out the provided PR template."
+            exit 1
+          fi
+          
+          # 2. Enforce Checkboxes
+          # Looks for at least one checked box: - [x] or - [X]
+          if ! echo "$PR_BODY" | grep -Eq "\- \[[xX]\]"; then
+            echo "::error title=Incomplete Checklist::Please mark at least one checkbox in the 'Type of Change' or 'Checklist' sections."
+            exit 1
+          fi
+          
+          # 3. Enforce an actual written description
+          # We strip out the HTML comments (<!-- -->), the markdown headers (###), 
+          # and the checklist items (- [ ] / - [x]). 
+          # What remains is the raw text the user typed.
+          CLEAN_BODY=$(echo "$PR_BODY" | sed -E 's/<!--.*-->//g' | sed -E '/^### /d' | sed -E '/^- \[[ xX]\] /d' | tr -d ' \n\r')
+          
+          # If the remaining custom text is less than 15 characters, they didn't write a proper description.
+          if [[ ${#CLEAN_BODY} -lt 15 ]]; then
+            echo "::error title=Missing Description::Your PR description is too short. Please describe your changes in detail under the '### Description' header."
+            exit 1
+          fi
+          
+          echo "✅ PR body meets all template requirements."

@@ -46,12 +46,12 @@ fn format_value(value: &Value, indent_level: usize, out: &mut String) -> Result<
                     out.push_str(&"  ".repeat(indent_level + 1));
                     format_value(item, indent_level + 1, out)?;
                     if i < arr.len() - 1 {
-                        out.push_str(",");
+                        out.push(',');
                     }
-                    out.push_str("\n");
+                    out.push('\n');
                 }
                 out.push_str(&indent);
-                out.push_str("]");
+                out.push(']');
             }
         }
         Value::Object(obj) => {
@@ -61,10 +61,10 @@ fn format_value(value: &Value, indent_level: usize, out: &mut String) -> Result<
                 // At the document root level, print without surrounding parentheses
                 for (i, (k, v)) in obj.iter().enumerate() {
                     out.push_str(k);
-                    out.push_str("=");
+                    out.push('=');
                     format_value(v, 0, out)?;
                     if i < obj.len() - 1 {
-                        out.push_str("\n");
+                        out.push('\n');
                     }
                 }
             } else {
@@ -72,15 +72,15 @@ fn format_value(value: &Value, indent_level: usize, out: &mut String) -> Result<
                 for (i, (k, v)) in obj.iter().enumerate() {
                     out.push_str(&"  ".repeat(indent_level + 1));
                     out.push_str(k);
-                    out.push_str("=");
+                    out.push('=');
                     format_value(v, indent_level + 1, out)?;
                     if i < obj.len() - 1 {
-                        out.push_str(",");
+                        out.push(',');
                     }
-                    out.push_str("\n");
+                    out.push('\n');
                 }
                 out.push_str(&indent);
-                out.push_str(")");
+                out.push(')');
             }
         }
     }

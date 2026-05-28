@@ -5,6 +5,7 @@ edition.workspace = true
 
 [dependencies]
 kosl-parser = { path = "../kosl-parser" }
+kosl-formatter = { path = "../kosl-formatter" }
 kosl-transpiler = { path = "../kosl-transpiler" }
 clap = { version = "4.4", features = ["derive"] }
 anyhow = "1.0"

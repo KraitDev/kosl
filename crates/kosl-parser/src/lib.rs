@@ -1,12 +1,17 @@
-use kosl_ast::Value;
+use anyhow::{bail, Result};
 use indexmap::IndexMap;
-use anyhow::{Result, bail};
+use kosl_ast::Value;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Token {
     Ident(String),
     String(String),
-    Eq, Comma, LParen, RParen, LBracket, RBracket,
+    Eq,
+    Comma,
+    LParen,
+    RParen,
+    LBracket,
+    RBracket,
     Eof,
 }
 
@@ -16,7 +21,9 @@ pub struct Lexer<'a> {
 
 impl<'a> Lexer<'a> {
     pub fn new(input: &'a str) -> Self {
-        Self { input: input.chars().peekable() }
+        Self {
+            input: input.chars().peekable(),
+        }
     }
 
     fn skip_whitespace_and_comments(&mut self) {
@@ -27,10 +34,16 @@ impl<'a> Lexer<'a> {
                 let next = self.input.clone().nth(1);
                 if c == '#' || (c == '/' && next == Some('/')) {
                     while let Some(ch) = self.input.next() {
-                        if ch == '\n' { break; }
+                        if ch == '\n' {
+                            break;
+                        }
                     }
-                } else { break; }
-            } else { break; }
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
         }
     }
 
@@ -46,7 +59,9 @@ impl<'a> Lexer<'a> {
             Some('"') => {
                 let mut s = String::new();
                 while let Some(c) = self.input.next() {
-                    if c == '"' { break; }
+                    if c == '"' {
+                        break;
+                    }
                     s.push(c);
                 }
                 Token::String(s)
@@ -56,7 +71,9 @@ impl<'a> Lexer<'a> {
                 while let Some(&ch) = self.input.peek() {
                     if ch.is_alphanumeric() || ch == '_' || ch == '-' || ch == '.' {
                         s.push(self.input.next().unwrap());
-                    } else { break; }
+                    } else {
+                        break;
+                    }
                 }
                 Token::Ident(s)
             }
@@ -100,8 +117,10 @@ impl<'a> Parser<'a> {
             _ => bail!("Expected key, found {:?}", self.current),
         };
         self.advance();
-        
-        if self.current != Token::Eq { bail!("Expected '=' after key '{}'", key); }
+
+        if self.current != Token::Eq {
+            bail!("Expected '=' after key '{}'", key);
+        }
         self.advance();
 
         let val = self.parse_value_or_implicit_array()?;
@@ -110,13 +129,13 @@ impl<'a> Parser<'a> {
 
     fn parse_value_or_implicit_array(&mut self) -> Result<Value> {
         let first_val = self.parse_single_value()?;
-        
+
         // Check for implicit array
         if self.current == Token::Comma {
             let mut arr = vec![first_val];
             while self.current == Token::Comma {
                 self.advance(); // consume comma
-                // Handle trailing comma before structural close
+                                // Handle trailing comma before structural close
                 if matches!(self.current, Token::RParen | Token::RBracket | Token::Eof) {
                     break;
                 }
@@ -124,7 +143,7 @@ impl<'a> Parser<'a> {
             }
             return Ok(Value::Array(arr));
         }
-        
+
         Ok(first_val)
     }
 
@@ -156,7 +175,9 @@ impl<'a> Parser<'a> {
                 break;
             }
         }
-        if self.current != Token::RParen { bail!("Expected ')'"); }
+        if self.current != Token::RParen {
+            bail!("Expected ')'");
+        }
         self.advance();
         Ok(Value::Object(obj))
     }
@@ -172,16 +193,26 @@ impl<'a> Parser<'a> {
                 break;
             }
         }
-        if self.current != Token::RBracket { bail!("Expected ']'"); }
+        if self.current != Token::RBracket {
+            bail!("Expected ']'");
+        }
         self.advance();
         Ok(Value::Array(arr))
     }
 
     fn infer_bareword(&self, s: String) -> Value {
-        if s == "true" { return Value::Bool(true); }
-        if s == "false" { return Value::Bool(false); }
-        if s == "null" { return Value::Null; }
-        if let Ok(i) = s.parse::<i64>() { return Value::Int(i); }
+        if s == "true" {
+            return Value::Bool(true);
+        }
+        if s == "false" {
+            return Value::Bool(false);
+        }
+        if s == "null" {
+            return Value::Null;
+        }
+        if let Ok(i) = s.parse::<i64>() {
+            return Value::Int(i);
+        }
         if let Ok(f) = s.parse::<f64>() {
             // Must contain exactly one dot to be a float. (Prevents 0.1.0 parsing as float logic bugs)
             if s.chars().filter(|&c| c == '.').count() == 1 {

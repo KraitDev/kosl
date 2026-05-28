@@ -1,7 +1,7 @@
-use kosl_ast::Value;
 use anyhow::Result;
-use toml::Value as TomlValue;
+use kosl_ast::Value;
 use toml::map::Map;
+use toml::Value as TomlValue;
 
 pub fn kosl_to_toml(kosl: &Value) -> Result<String> {
     let toml_ast = convert_value(kosl)?;

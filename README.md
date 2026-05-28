@@ -1,6 +1,12 @@
-# Krait Object Serialization Language (KOSL) 🐍
+<div align="center">
 
-KOSL is a modern, human-first serialization and configuration language. It combines the simplicity of `.env` files, the structure of JSON, and the usability of TOML, while completely avoiding the magical implicit conversions and whitespace sensitivity of YAML.
+<img height="120" alt="kosl-logo" src="https://github.com/user-attachments/assets/20ff3874-5149-4406-88fb-3682a445e0d6" />
+
+[![Version](https://img.shields.io/badge/-0D1117?style=flat-square&color=0D1117)](#)
+
+**Krait Object Serialization Language (KOSL) is a modern, human-first serialization and configuration language. It combines the simplicity of** `.env` **files, the structure of JSON, and the usability of TOML, while completely avoiding the magical implicit conversions and whitespace sensitivity of YAML.**
+
+</div>
 
 ## Features
 - **Strict & Deterministic**: No indentation semantics, no implicit date parsing.

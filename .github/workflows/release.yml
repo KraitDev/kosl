@@ -1,0 +1,112 @@
+name: Release KOSL
+
+on:
+  push:
+    tags:
+      - 'v*'
+      
+permissions:
+  contents: write
+
+jobs:
+  build-binaries:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # --- LINUX COMPATIBILITY (Using musl for 100% static, distro-agnostic binaries) ---
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            artifact_name: kosl-cli
+            asset_name: kosl-linux-x64
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-musl
+            artifact_name: kosl-cli
+            asset_name: kosl-linux-arm64
+
+          # --- MACOS COMPATIBILITY (Intel and Apple Silicon) ---
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            artifact_name: kosl-cli
+            asset_name: kosl-macos-x64
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact_name: kosl-cli
+            asset_name: kosl-macos-apple-silicon
+
+          # --- WINDOWS COMPATIBILITY (Intel/AMD and ARM64) ---
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact_name: kosl-cli.exe
+            asset_name: kosl-windows-x64.exe
+          - os: windows-latest
+            target: aarch64-pc-windows-msvc
+            artifact_name: kosl-cli.exe
+            asset_name: kosl-windows-arm64.exe
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      # Automatically installs cross-compilation linkers for non-native targets (like Windows ARM or Linux ARM)
+      - name: Setup Cross-Compilation Toolchain
+        uses: taiki-e/setup-cross-toolchain-action@v1
+        with:
+          target: ${{ matrix.target }}
+
+      - name: Cache Cargo Dependencies
+        uses: swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      # Compile explicitly pointing to the target architecture. 
+      # We target the kosl-cli package specifically so we only build the binary.
+      - name: Build KOSL Binary (Release)
+        run: cargo build --release --package kosl-cli --target ${{ matrix.target }}
+
+      # Handles moving binaries out of the target subdirectories and attaching them to the release
+      - name: Upload Release Binaries
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/${{ matrix.target }}/release/${{ matrix.artifact_name }}
+          asset_name: ${{ matrix.asset_name }}
+          tag: ${{ github.ref }}
+          overwrite: true
+
+  # Bonus Job: Automatically package and attach the VS Code Extension to the GitHub release!
+  build-vscode-extension:
+    name: Build VS Code Extension
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        working-directory: ./vscode-extension
+        run: npm install --no-fund --no-audit
+
+      - name: Package Extension (VSIX)
+        working-directory: ./vscode-extension
+        run: npx @vscode/vsce package --out kosl-lang.vsix
+
+      - name: Upload VS Code Extension
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./vscode-extension/kosl-lang.vsix
+          asset_name: kosl-lang.vsix
+          tag: ${{ github.ref }}
+          overwrite: true

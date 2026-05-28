@@ -6,4 +6,5 @@ edition.workspace = true
 [dependencies]
 kosl-ast = { path = "../kosl-ast" }
 anyhow = "1.0"
+indexmap = "2.0"
 thiserror = "1.0"

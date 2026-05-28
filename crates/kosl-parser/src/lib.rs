@@ -33,7 +33,7 @@ impl<'a> Lexer<'a> {
             } else if c == '#' || c == '/' {
                 let next = self.input.clone().nth(1);
                 if c == '#' || (c == '/' && next == Some('/')) {
-                    while let Some(ch) = self.input.next() {
+                    for ch in self.input.by_ref() {
                         if ch == '\n' {
                             break;
                         }
@@ -58,7 +58,7 @@ impl<'a> Lexer<'a> {
             Some(']') => Token::RBracket,
             Some('"') => {
                 let mut s = String::new();
-                while let Some(c) = self.input.next() {
+                for c in self.input.by_ref() {
                     if c == '"' {
                         break;
                     }

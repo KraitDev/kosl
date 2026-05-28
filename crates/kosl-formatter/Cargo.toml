@@ -1,0 +1,9 @@
+[package]
+name = "kosl-formatter"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+kosl-ast = { path = "../kosl-ast" }
+kosl-parser = { path = "../kosl-parser" }
+anyhow = "1.0"

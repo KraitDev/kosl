@@ -4,6 +4,7 @@
   "description": "Syntax highlighting and formatting for Krait Object Serialization Language (KOSL)",
   "version": "0.2.1",
   "publisher": "KraitDev",
+  "icon": "assets/kosl-icon.png",
   "engines": {
     "vscode": "^1.80.0"
   },

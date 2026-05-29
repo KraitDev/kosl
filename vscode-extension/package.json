@@ -2,7 +2,7 @@
   "name": "kosl",
   "displayName": "KOSL Support",
   "description": "Syntax highlighting and formatting for Krait Object Serialization Language (KOSL)",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "publisher": "KraitDev",
   "engines": {
     "vscode": "^1.80.0"

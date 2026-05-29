@@ -1,0 +1,16 @@
+{
+  "iconDefinitions": {
+    "kosl": {
+      "iconPath": "./kosl-icon.svg"
+    }
+  },
+  "fileExtensions": {
+    "kosl": "kosl"
+  },
+  "fileNames": {
+    "Cargo.kosl": "kosl"
+  },
+  "languageIds": {
+    "kosl": "kosl"
+  }
+}

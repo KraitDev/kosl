@@ -30,6 +30,7 @@ dependencies=(
     features=[derive]
   )
 )
+```
 
 ## CLI Usage
 ```bash
